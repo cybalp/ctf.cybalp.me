@@ -1,1 +1,103 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CTF Login</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: #161b22;
+      padding: 30px;
+      width: 320px;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0,0,0,.5);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #58a6ff;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #238636;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #2ea043;
+    }
+    #m {
+      margin-top: 10px;
+      color: #f85149;
+      text-align: center;
+    }
+    .hint {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #8b949e;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h2>Beginner CTF</h2>
+
+  <input id="u" placeholder="username">
+  <input id="p" type="password" placeholder="password">
+  <button onclick="login()">Login</button>
+
+  <p id="m"></p>
+
+  <div class="hint">
+    Tip: Check the Network tab 👀
+  </div>
+</div>
+
+<script>
+async function login() {
+  const r = await fetch("https://ornekctf-backend.cybalpx.workers.dev/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: u.value,
+      password: p.value
+    })
+  });
+
+  const d = await r.json();
+
+  if (d.success) {
+    localStorage.setItem("ctf_token", d.token);
+    location.href = "/dashboard.html";
+  } else {
+    m.innerText = "Login failed";
+  }
+}
+</script>
+
+</body>
+</html>

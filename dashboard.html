@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CTF Dashboard</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #161b22;
+      padding: 15px;
+      border-bottom: 1px solid #30363d;
+    }
+    header h1 {
+      margin: 0;
+      color: #58a6ff;
+    }
+    .container {
+      padding: 20px;
+    }
+    .ctf-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+    }
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .logout {
+      margin-top: 20px;
+      color: #f85149;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CTF Dashboard</h1>
+</header>
+
+<div class="container">
+  <div class="ctf-card">
+    <h3>CTF #1 — Broken Login</h3>
+    <p>Category: Web / Auth</p>
+    <a href="/ctf/ornekctf/login.html">Start Challenge →</a>
+  </div>
+
+  <div class="logout" onclick="logout()">Logout</div>
+</div>
+
+<script>
+async function check() {
+  const token = localStorage.getItem("ctf_token");
+  if (!token) location.href = "/";
+
+  const r = await fetch("https://ornekctf-backend.cybalpx.workers.dev/verify", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const d = await r.json();
+  if (!d.ok) {
+    localStorage.removeItem("ctf_token");
+    location.href = "/";
+  }
+}
+
+function logout() {
+  localStorage.removeItem("ctf_token");
+  location.href = "/";
+}
+
+check();
+</script>
+
+</body>
+</html>
