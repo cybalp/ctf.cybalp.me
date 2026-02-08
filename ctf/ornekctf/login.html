@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+  <meta charset="UTF-8">
+  <title>Örnek CTF – Login</title>
+  <a href="/ctf/ornekctf/login.html">Örnek CTF</a>
+</head>
+<body>
+
+<h2>CTF Admin Login</h2>
+
+<input id="u" placeholder="username"><br><br>
+<input id="p" type="password" placeholder="password"><br><br>
+<button onclick="login()">Login</button>
+
+<pre id="out"></pre>
+
+<script>
+async function login() {
+  const u = document.getElementById("u").value;
+  const p = document.getElementById("p").value;
+
+  const res = await fetch(
+    "https://ornekctf-backend.cybalpx.workers.dev",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: u, password: p })
+    }
+  );
+
+  const data = await res.json();
+
+  document.getElementById("out").innerText =
+    data.flag ? data.flag : "Login failed";
+}
+</script>
+
+</body>
+</html>
