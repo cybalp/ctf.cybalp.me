@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hidden File</title>
+  <style>
+    :root{
+      --bg1:#070A12;
+      --bg2:#0B1430;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.03);
+      --border:rgba(255,255,255,.12);
+      --text:#EAF0FF;
+      --muted:rgba(234,240,255,.72);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(120,85,255,.28), transparent 55%),
+        radial-gradient(900px 500px at 85% 25%, rgba(0,210,255,.22), transparent 55%),
+        radial-gradient(900px 600px at 50% 90%, rgba(255,80,140,.16), transparent 55%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .wrap{ width:min(760px, 100%); }
+    .card{
+      border:1px solid var(--border);
+      border-radius:22px;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      box-shadow: 0 24px 80px rgba(0,0,0,.55);
+      overflow:hidden;
+      position:relative;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: linear-gradient(90deg, rgba(120,85,255,.35), rgba(0,210,255,.25), rgba(255,80,140,.2));
+      filter: blur(24px);
+      opacity:.35;
+      pointer-events:none;
+    }
+    .inner{ position:relative; padding:26px 24px 20px; }
+    .top{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .logo{
+      width:52px; height:52px;
+      border-radius:14px;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      padding:8px;
+      object-fit:contain;
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .flagRow{
+      display:flex;
+      gap:10px;
+      align-items:stretch;
+      margin-top:14px;
+    }
+    .flagBox{
+      flex:1;
+      display:flex;
+      align-items:center;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
+      min-height:52px;
+    }
+    .flag{
+      margin:0;
+      font-family:var(--mono);
+      font-size:14px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:auto;
+      user-select:all;
+    }
+    .btn{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.10);
+      color:var(--text);
+      font-weight:700;
+      padding:12px 14px;
+      min-width:120px;
+      cursor:pointer;
+      transition: transform .06s ease, background .15s ease;
+    }
+    .btn:hover{ background: rgba(255,255,255,.14); }
+    .btn:active{ transform: translateY(1px); }
+
+    .meta{
+      margin-top:14px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.16);
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:13px;
+      display:none;
+      backdrop-filter: blur(10px);
+    }
+    a{ color: rgba(234,240,255,.92); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="inner">
+        <div class="top">
+          <img class="logo" src="./logo.png" alt="logo" />
+          <div>
+            <h1>HIDDEN AREA</h1>
+            <p class="sub">Copy Flag - WIN</p>
+          </div>
+        </div>
+
+        <div class="flagRow" role="group" aria-label="Flag">
+          <div class="flagBox">
+            <pre id="flag" class="flag">FLAG{web-beginner-demo}</pre>
+          </div>
+          <button id="copyBtn" class="btn" type="button">Copy</button>
+        </div>
+
+        <div class="meta">
+          <span>Beginner • robots.txt </span>
+          <span><a href="https://ctf.cybalp.me/">HOME</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied ✅</div>
+
+  <script>
+    const btn = document.getElementById('copyBtn');
+    const flagEl = document.getElementById('flag');
+    const toast = document.getElementById('toast');
+
+    function showToast(){
+      toast.style.display = 'block';
+      clearTimeout(window.__t);
+      window.__t = setTimeout(()=> toast.style.display='none', 1200);
+    }
+
+    btn.addEventListener('click', async () => {
+      const text = flagEl.innerText.trim();
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast();
+      }catch(e){
+        // fallback
+        const range = document.createRange();
+        range.selectNodeContents(flagEl);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand('copy');
+        sel.removeAllRanges();
+        showToast();
+      }
+    });
+  </script>
+</body>
+</html>
